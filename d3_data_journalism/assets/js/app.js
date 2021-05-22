@@ -56,8 +56,8 @@ console.log(data)
         return data.poverty;
     });
 
-    xLinearScale.domain([xMin, xMax]);
-    yLinearScale.domain([yMin, yMax]);
+    xLinearScale.domain([xMin -1, xMax +1]);
+    yLinearScale.domain([yMin -1, yMax +1]);
 
     //append axes
     chartGroup.append("g")
@@ -78,7 +78,7 @@ console.log(data)
         .attr("opacity", .5);
         
     // Create circle text.
-    var circleText = chartGroup.selectAll("text")
+    var circleText = chartGroup.selectAll("statetext")
     .data(healthData)
     .enter()
     .append("text")            
