@@ -26,6 +26,7 @@ d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
 d3.csv("data.csv", function(err, healthData) {
     if (err) throw err;
 console.log(healthData)
+
     //parse
     healthData.forEach(function(data) {
         data.poverty = +data.poverty;
@@ -63,4 +64,27 @@ console.log(healthData)
     yLinearScale.domain([yMin, yMax]);
     console.log(xMin);
     console.log(yMin);
+
+    //append axes
+    chartGroup.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(bottomAxis);
+    chartGroup.append("g")
+        .call(leftAxis);
+    
+    //create circles
+    var circlesGroup = chartGroup.selectAll("circle")
+    .data(healthData)
+    .enter()
+    .append("circle")
+    .attr("cx", d => xLinearScale(d.healthcare +1.5))
+    .attr("cy", d => yLinearScale(d.poverty +0.3))
+    .attr("r", "12")
+    .attr("fill", "blue")
+    .attr("opacity", .5)
+    .on("mouseout", function(data, index) {
+        toolTip.hide(data);
+    });
+    
+    
 })
