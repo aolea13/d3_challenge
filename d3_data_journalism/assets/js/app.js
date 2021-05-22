@@ -31,5 +31,10 @@ console.log(healthData)
         data.poverty = +data.poverty;
         data.healthcare = +data.healthcare
     });
+
+    //scale functions
+    var xLinearScale = d3.scaleLinear().range([0, width]);
+    var yLinearScale = d3.scaleLinear().range([height, 0]);
+
     
 })
