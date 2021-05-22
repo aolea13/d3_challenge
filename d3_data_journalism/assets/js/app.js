@@ -1,26 +1,24 @@
-var svgWidth = 960;
-var svgHeight = 500;
+var svgWidth = 900;
+var svgHeight = 600;
 
 var margin = {
     top: 20,
-    right: 40,
+    right: 10,
     bottom: 60,
-    left: 100
+    left: 80
 };
 
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
 //create an svg wrapper
-var svg = d3.select("body")
+var svg = d3.select("#scatter")
     .append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);
 
 var chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
 
 //import data
 d3.csv("assets/data/data.csv").then(function(healthData) {
@@ -75,35 +73,13 @@ console.log(healthData)
     .data(healthData)
     .enter()
     .append("circle")
-    .attr("cx", d => xLinearScale(d.healthcare +1.5))
-    .attr("cy", d => yLinearScale(d.poverty +0.3))
+    .attr("cx", d => xLinearScale(d.healthcare))
+    .attr("cy", d => yLinearScale(d.poverty))
     .attr("r", "12")
-    .attr("fill", "blue")
+    .attr("fill", "green")
     .attr("opacity", .5)
-    .on("mouseout", function(data, index) {
-        toolTip.hide(data);
-    });
     
-    //initialize tool tip
-    var toolTip = d3.tip()
-        .attr("class", "tooltip")
-        .offset([80, -60])
-        .html(function(d) {
-            return (abbr + '%');
-        });
-    
-    //tooltip in the chart
-    chartGroup.call(toolTip);
-
-    //tooltip event listener
-    circlesGroup.on("click", function(data) {
-        toolTip.show(data);
-    })
-        .on("mouseout", function(data, index) {
-            toolTip.hide(data);
-        });
-    
-    //axis lables
+    // axis lables
     chartGroup.append("text")
     .style("font-size", "12px")
     .selectAll("tspan")
@@ -111,10 +87,10 @@ console.log(healthData)
     .enter()
     .append("tenspan")
         .attr("x", function(data) {
-            return xLinearScale(data.healthcare +1.3);
+            return xLinearScale(data.healthcare);
         })
         .attr("y", function(data) {
-            return yLinearScale(data.poverty +.1);
+            return yLinearScale(data.poverty);
         })
         .text(function(data) {
             return data.abbr
@@ -126,8 +102,20 @@ console.log(healthData)
         .attr("dy", "1em")
         .attr("class", "axisText")
         .text("Lacks Healthcare(%)");
-    chartGroup.append("g")
+    chartGroup.append("text")
         .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
         .attr("class", "axisText")
-        .text("In Poverty (%)");    
+        .text("In Poverty (%)");
+    chartGroup.append("g")
+    .selectAll("text")
+    .data(healthData)
+    .enter()
+    .append("text")
+        .text(d=>d.abbr)
+        .attr("x",d=>xLinearScale(d.poverty))
+        .attr("y",d=>yLinearScale(d.healthcare))
+        .classed(".stateText", true)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "12px")
+        .attr("alignment-baseline", "central");
 });
