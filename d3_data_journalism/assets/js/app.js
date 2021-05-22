@@ -3,9 +3,9 @@ var svgHeight = 600;
 
 var margin = {
     top: 20,
-    right: 10,
+    right: 30,
     bottom: 60,
-    left: 80
+    left: 85
 };
 
 var width = svgWidth - margin.left - margin.right;
@@ -26,7 +26,7 @@ d3.csv("assets/data/data.csv").then(function(healthData) {
     healthData.forEach(function(data) {
         data.poverty = +data.poverty;
         data.healthcare = +data.healthcare
-console.log(healthData)
+console.log(data)
     });
 
     //scale functions
@@ -58,8 +58,6 @@ console.log(healthData)
 
     xLinearScale.domain([xMin, xMax]);
     yLinearScale.domain([yMin, yMax]);
-    console.log(xMin);
-    console.log(yMin);
 
     //append axes
     chartGroup.append("g")
@@ -73,11 +71,22 @@ console.log(healthData)
     .data(healthData)
     .enter()
     .append("circle")
-    .attr("cx", d => xLinearScale(d.healthcare))
-    .attr("cy", d => yLinearScale(d.poverty))
-    .attr("r", "12")
-    .attr("fill", "green")
-    .attr("opacity", .5)
+        .attr("cx", d => xLinearScale(d.healthcare))
+        .attr("cy", d => yLinearScale(d.poverty))
+        .attr("r", "12")
+        .attr("fill", "green")
+        .attr("opacity", .5);
+        
+    // Create circle text.
+    var circleText = chartGroup.selectAll("text")
+    .data(healthData)
+    .enter()
+    .append("text")            
+        .attr("x", d => xLinearScale(d.healthcare))
+        .attr("y", d => yLinearScale(d.poverty))
+        .attr("dy", ".35em") 
+        .text(d => d.abbr)
+        .classed("stateText", true);
     
     // axis lables
     chartGroup.append("text")
@@ -87,10 +96,10 @@ console.log(healthData)
     .enter()
     .append("tenspan")
         .attr("x", function(data) {
-            return xLinearScale(data.healthcare);
+            return xLinearScale(data.healthcare +1.3);
         })
         .attr("y", function(data) {
-            return yLinearScale(data.poverty);
+            return yLinearScale(data.poverty +.1);
         })
         .text(function(data) {
             return data.abbr
@@ -106,16 +115,6 @@ console.log(healthData)
         .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
         .attr("class", "axisText")
         .text("In Poverty (%)");
-    chartGroup.append("g")
-    .selectAll("text")
-    .data(healthData)
-    .enter()
-    .append("text")
-        .text(d=>d.abbr)
-        .attr("x",d=>xLinearScale(d.poverty))
-        .attr("y",d=>yLinearScale(d.healthcare))
-        .classed(".stateText", true)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "12px")
-        .attr("alignment-baseline", "central");
+
+        
 });
