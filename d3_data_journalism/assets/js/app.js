@@ -23,14 +23,12 @@ var chartGroup = svg.append("g")
 d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
 
 //import data
-d3.csv("assets/data/data.csv", function(err, healthData) {
-    if (err) throw err;
-console.log(healthData)
-
+d3.csv("assets/data/data.csv").then(function(healthData) {
     //parse
     healthData.forEach(function(data) {
         data.poverty = +data.poverty;
         data.healthcare = +data.healthcare
+console.log(healthData)
     });
 
     //scale functions
