@@ -23,7 +23,7 @@ var chartGroup = svg.append("g")
 d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
 
 //import data
-d3.csv("data.csv", function(err, healthData) {
+d3.csv("assets/data/data.csv", function(err, healthData) {
     if (err) throw err;
 console.log(healthData)
 
@@ -105,4 +105,31 @@ console.log(healthData)
             toolTip.hide(data);
         });
     
-})
+    //axis lables
+    chartGroup.append("text")
+    .style("font-size", "12px")
+    .selectAll("tspan")
+    .data(healthData)
+    .enter()
+    .append("tenspan")
+        .attr("x", function(data) {
+            return xLinearScale(data.healthcare +1.3);
+        })
+        .attr("y", function(data) {
+            return yLinearScale(data.poverty +.1);
+        })
+        .text(function(data) {
+            return data.abbr
+        });
+    chartGroup.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left + 40)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .attr("class", "axisText")
+        .text("Lacks Healthcare(%)");
+    chartGroup.append("g")
+        .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+        .attr("class", "axisText")
+        .text("In Poverty (%)");    
+});
